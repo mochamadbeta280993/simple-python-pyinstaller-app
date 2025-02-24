@@ -18,13 +18,4 @@ node {
         // Publish JUnit test results
         junit 'test-reports/results.xml'
     }
-
-    stage('Deliver') {
-        // Build final executable inside cdrx/pyinstaller-linux:python2
-        docker.image('cdrx/pyinstaller-linux:python2').inside {
-            sh 'pyinstaller --onefile sources/add2vals.py'
-        }
-        // Archive the artifact so it can be downloaded from Jenkins
-        archiveArtifacts artifacts: 'dist/add2vals'
-    }
 }
