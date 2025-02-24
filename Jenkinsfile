@@ -1,5 +1,7 @@
 node {
     stage('Build') {
+        // Pull the latest code from SCM
+        checkout scm
         // Run inside python:2-alpine Docker container
         docker.image('python:2-alpine').inside {
             // Compile Python sources
