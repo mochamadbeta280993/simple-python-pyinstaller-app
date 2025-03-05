@@ -15,7 +15,7 @@ node {
 
     stage('Deliver') {
         sh '''
-        docker run --rm -cdrx/pyinstaller-linux:python2 /bin/sh -c "ls -lah /workspace"
+        docker run --rm -u root cdrx/pyinstaller-linux:python2 /bin/sh -c "echo Running as root"
         '''
     }
 }
