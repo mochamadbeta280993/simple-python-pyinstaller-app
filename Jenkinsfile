@@ -15,10 +15,7 @@ node {
 
     stage('Deliver') {
         sh '''
-        echo "Shell script is executing!"
-        echo "Shell script executed successfully."
-        whoami
-        id
+        docker run --rm -cdrx/pyinstaller-linux:python2 /bin/sh -c "ls -lah /workspace"
         '''
     }
 }
