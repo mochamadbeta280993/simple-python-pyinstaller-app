@@ -15,7 +15,19 @@ node {
 
     stage('Deliver') {
         sh '''
-        docker run --rm -v $WORKSPACE:/workspace cdrx/pyinstaller-linux:python2 /bin/sh -c "ls -lah /workspace"
+        echo "Checking Docker version and user..."
+        docker version
+        whoami
+        id
+        echo "Checking Jenkins workspace..."
+        ls -lah $WORKSPACE
+        echo "Checking running containers before execution..."
+        docker ps -a
+        echo "Attempting to start PyInstaller container..."
+        docker run --rm --entrypoint /bin/sh cdrx/pyinstaller-linux:python2 -c "echo Container started successfully"
+        echo "Checking running containers after execution..."
+        docker ps -a
+        echo "Debugging complete."
         '''
 //        docker.image('cdrx/pyinstaller-linux:python3').inside('-v $WORKSPACE:/workspace --entrypoint /bin/sh') {
 //            sh 'pyinstaller --onefile sources/add2vals.py'
