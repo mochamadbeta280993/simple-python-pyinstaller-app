@@ -13,12 +13,10 @@ node {
         junit 'test-reports/results.xml'
     }
 
-    stage('Deploy') {
-        docker.image('python:3.9').inside('-u root') {
-            sh 'pip install pyinstaller'
+    stage('Deliver') {
+        docker.image('cdrx/pyinstaller-linux:python2').inside {
             sh 'pyinstaller --onefile sources/add2vals.py'
-            sleep(time: 1, unit: 'MINUTES')
-        }
+        }       
         archiveArtifacts artifacts: 'dist/add2vals'
     }
 }
