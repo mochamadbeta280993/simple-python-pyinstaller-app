@@ -15,7 +15,7 @@ node {
 
     stage('Deliver') {
         sh '''
-        docker run --rm cdrx/pyinstaller-linux:python2
+        docker run --rm -u root cdrx/pyinstaller-linux:python2 /bin/sh -c "echo Running as root"
         '''
 //        docker.image('cdrx/pyinstaller-linux:python3').inside('-v $WORKSPACE:/workspace --entrypoint /bin/sh') {
 //            sh 'pyinstaller --onefile sources/add2vals.py'
