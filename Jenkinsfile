@@ -14,7 +14,7 @@ node {
     }
 
     stage('Deliver') {
-        docker.image('cdrx/pyinstaller-linux:python2').run('-u root') {
+        docker.image('cdrx/pyinstaller-linux:python2').inside('--entrypoint=""') {
             sh 'pyinstaller --onefile sources/add2vals.py'
 		}
         archiveArtifacts artifacts: 'dist/add2vals'
