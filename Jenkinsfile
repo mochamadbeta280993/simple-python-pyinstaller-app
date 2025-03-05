@@ -15,7 +15,12 @@ node {
 
     stage('Deliver') {
         sh '''
-        docker run --rm -it cdrx/pyinstaller-linux:python2 /bin/sh
+        echo "Starting container for debugging..."
+        docker run -d --name pyinstaller_debug cdrx/pyinstaller-linux:python2 tail -f /dev/null
+        echo "Listing running containers..."
+        docker ps -a
+        echo "Entering the container..."
+        docker exec -it pyinstaller_debug /bin/sh
         '''
 //        docker.image('cdrx/pyinstaller-linux:python3').inside('-v $WORKSPACE:/workspace --entrypoint /bin/sh') {
 //            sh 'pyinstaller --onefile sources/add2vals.py'
