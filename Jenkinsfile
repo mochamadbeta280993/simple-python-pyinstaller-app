@@ -13,12 +13,10 @@ node {
         junit 'test-reports/results.xml'
     }
 
-    // stage('Deliver') {
-    //     sh '''
-    //     echo "Shell script is executing!"
-    //     whoami
-    //     id
-    //     echo "Shell script executed successfully."
-    //     '''
-    // }
+    stage('Deliver') {
+        sh '''
+        echo "Shell script is executing!"
+        echo "Shell script executed successfully."
+        '''
+    }
 }
