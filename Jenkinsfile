@@ -16,7 +16,7 @@ node {
     stage('Deliver') {
         sh '''
         echo "Starting container for debugging..."
-        docker run -d --name pyinstaller_debug cdrx/pyinstaller-linux:python2 tail -f /dev/null
+        docker run --rm -it cdrx/pyinstaller-linux:python2 /bin/sh
         echo "Listing running containers..."
         docker ps -a
         echo "Entering the container..."
