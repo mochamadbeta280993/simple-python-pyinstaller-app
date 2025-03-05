@@ -16,8 +16,8 @@ node {
     stage('Deliver') {
         docker.image('python:3.9').inside('-u root') {
             sh '''
-                'pip install pyinstaller'
-                'pyinstaller --onefile sources/add2vals.py'
+                pip install pyinstaller
+                pyinstaller --onefile sources/add2vals.py
             '''
 		}
         archiveArtifacts artifacts: 'dist/add2vals'
