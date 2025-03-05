@@ -14,21 +14,10 @@ node {
     }
 
     stage('Deliver') {
-        docker.image('cdrx/pyinstaller-linux:python2').inside('-u root --entrypoint=""') {
+        docker.image('python:3.9').inside('-u root') {
             sh '''
-                python --version
-            
-                sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list
-                apt-get update
-
-                apt-get install -y locales python2.7 python2.7-minimal python2.7-dev
-                locale-gen en_US.UTF-8
-
-                curl https://bootstrap.pypa.io/pip/2.7/get-pip.py -o get-pip.py
-                python get-pip.py --no-cache-dir --disable-pip-version-check pip==20.3.4
-                
-                pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org pyinstaller
-                pyinstaller --onefile sources/add2vals.py
+                'pip install pyinstaller'
+                'pyinstaller --onefile sources/add2vals.py'
             '''
 		}
         archiveArtifacts artifacts: 'dist/add2vals'
