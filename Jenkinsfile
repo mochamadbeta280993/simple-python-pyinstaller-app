@@ -21,7 +21,7 @@ node {
                 sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list
                 apt-get update
 
-                apt-get install -y locales
+                apt-get install -y locales python2.7 python2.7-minimal python2.7-dev
                 locale-gen en_US.UTF-8
 
                 curl https://bootstrap.pypa.io/pip/2.7/get-pip.py -o get-pip.py
