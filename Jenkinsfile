@@ -17,6 +17,7 @@ node {
         docker.image('cdrx/pyinstaller-linux:python2').inside('--entrypoint=""') {
             sh '''
                 curl https://bootstrap.pypa.io/pip/2.7/get-pip.py -o get-pip.py
+                python get-pip.py
                 pip install pyinstaller
                 pyinstaller --onefile sources/add2vals.py
             '''
