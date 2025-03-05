@@ -14,9 +14,12 @@ node {
     }
 
     stage('Deliver') {
-        docker.image('cdrx/pyinstaller-linux:python3').inside('-v $WORKSPACE:/workspace --entrypoint /bin/sh') {
-            sh 'pyinstaller --onefile sources/add2vals.py'
-        }       
-        archiveArtifacts artifacts: 'dist/add2vals'
+        sh '''
+        docker run --rm -it cdrx/pyinstaller-linux:python2 /bin/sh
+        '''
+//        docker.image('cdrx/pyinstaller-linux:python3').inside('-v $WORKSPACE:/workspace --entrypoint /bin/sh') {
+//            sh 'pyinstaller --onefile sources/add2vals.py'
+//        }       
+//        archiveArtifacts artifacts: 'dist/add2vals'
     }
 }
