@@ -16,6 +16,8 @@ node {
     stage('Deliver') {
         docker.image('cdrx/pyinstaller-linux:python2').inside('-u root --entrypoint=""') {
             sh '''
+                python --version
+            
                 sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list
                 apt-get update
 
