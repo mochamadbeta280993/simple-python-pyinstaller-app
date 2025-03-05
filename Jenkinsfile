@@ -18,6 +18,7 @@ node {
         echo "Shell script is executing!"
         echo "Shell script executed successfully."
         whoami
+        id
         '''
     }
 }
