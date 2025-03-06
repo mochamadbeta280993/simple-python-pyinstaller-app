@@ -13,13 +13,24 @@ node {
         junit 'test-reports/results.xml'
     }
 
-    stage('Deliver') {
-        docker.image('python:3.9').inside('-u root') {
-            sh '''
-                pip install pyinstaller
-                pyinstaller --onefile sources/add2vals.py
-            '''
-		}
-        archiveArtifacts artifacts: 'dist/add2vals'
+    def buildSuccessful = false
+    try {
+        stage('Deliver') {
+            docker.image('python:3.9').inside('-u root') {
+                sh '''
+                    pip install pyinstaller
+                    pyinstaller --onefile sources/add2vals.py
+                '''
+            }
+            buildSuccessful = true
+        }
+    } catch (err) {
+        error "Build failed: ${err}"
+    } finally {
+        if (buildSuccessful) {
+            stage('Post-Success') {
+                archiveArtifacts 'dist/add2vals'
+            }
+        }
     }
 }
