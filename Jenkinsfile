@@ -1,5 +1,10 @@
 node {
     stage('Cleanup') {
+        // Ensure Jenkins has ownership of the workspace
+        sh 'sudo chown -R jenkins:jenkins /var/jenkins_home/workspace || true'
+        sh 'sudo chmod -R 775 /var/jenkins_home/workspace || true'
+
+        // Remove any existing Git lock file
         sh 'rm -f /var/jenkins_home/workspace/submission-cicd-pipeline-mochamadbeta/.git/config.lock || true'
     }
 
