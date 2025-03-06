@@ -1,4 +1,8 @@
 node {
+    stage('Cleanup') {
+        sh 'rm -f /var/jenkins_home/workspace/submission-cicd-pipeline-mochamadbeta/.git/config.lock || true'
+    }
+
     stage('Build') {
         checkout scm        
         docker.image('python:2-alpine').inside {
