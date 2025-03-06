@@ -21,10 +21,10 @@ node {
                     // Change ownership of workspace
                     sh 'chown -R $(id -u):$(id -g) "$WORKSPACE"'
 
+                    git branch -a
+
                     pip install pyinstaller
                     pyinstaller --onefile sources/add2vals.py
-
-                    git branch -a
                 '''
             }
             buildSuccessful = true
