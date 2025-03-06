@@ -22,7 +22,7 @@ node {
 
                 sh 'git branch -a'
 
-                sh 'git checkout -b main'
+                sh 'git checkout main || git checkout -b main'
 
                 sh 'cat Jenkinsfile'
                 
