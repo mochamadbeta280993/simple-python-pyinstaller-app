@@ -20,10 +20,12 @@ node {
                 // Change ownership of workspace
                 sh 'chown -R $(id -u):$(id -g) "$WORKSPACE"'
 
-                sh 'cd /workspace && ls -la'
-                sh 'cd /workspace && git status'
-                sh 'cd /workspace && git remote -v'
-                sh 'cd /workspace && git fetch --all'
+                sh '''
+                    cd /workspace
+                    git remote set-url origin file://$WORKSPACE
+                    git remote -v
+                    git fetch --all
+                '''
 
                 sh 'git branch -a'
 
