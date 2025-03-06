@@ -17,21 +17,26 @@ node {
     try {
         stage('Deliver') {
             docker.image('python:3.9').inside('-u root') {
-                // Change ownership of workspace
-                sh 'chown -R $(id -u):$(id -g) "$WORKSPACE"'
+                withCredentials([string(credentialsId: 'HEROKU_API_KEY', variable: 'HEROKU_API_KEY')]) {
+                    sh 'curl https://cli-assets.heroku.com/install.sh | sh'
+                    
+                    // Change ownership of workspace
+                    sh 'chown -R $(id -u):$(id -g) "$WORKSPACE"'
 
-                sh 'git remote set-url origin file:///windows/e/Documents/Dicoding Indonesia/Belajar Implementasi CI-CD/M03 Continuous Integration/simple-python-pyinstaller-app'
-                sh 'git fetch --all'
-                sh 'git checkout main || git checkout -b main origin/main'
-                sh 'git reset --hard origin/main'
-                sh 'git pull origin main'
+//                    sh 'git checkout main || git checkout -b main origin/main'
 
-                sh 'cat Jenkinsfile'
-                
-                sh '''
-                    pip install pyinstaller
-                    pyinstaller --onefile sources/add2vals.py
-                '''
+                    sh 'heroku git:remote -a submission-cicd-pipeline-mba'
+
+                    // Set OpenSSL legacy mode before pushing
+                    heroku config:set NODE_OPTIONS=--openssl-legacy-provider -a submission-cicd-pipeline-mba
+
+                    // Push to Heroku
+                    git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main
+
+                    // sh 'pip install pyinstaller'
+
+                    // sh 'pyinstaller --onefile sources/add2vals.py'
+                }
             }
             buildSuccessful = true
         }
