@@ -19,10 +19,10 @@ node {
             docker.image('python:3.9').inside('-u root') {
                 // Change ownership of workspace
                 sh 'chown -R $(id -u):$(id -g) "$WORKSPACE"'
+
+                sh 'git show -s --pretty=%D HEAD'
                 
                 sh '''
-                    git branch -a
-
                     pip install pyinstaller
                     pyinstaller --onefile sources/add2vals.py
                 '''
@@ -33,9 +33,7 @@ node {
         error "Build failed: ${err}"
     } finally {
         if (buildSuccessful) {
-            stage('Post-Success') {
-                archiveArtifacts 'dist/add2vals'
-            }
+            archiveArtifacts 'dist/add2vals'
         }
     }
 }
