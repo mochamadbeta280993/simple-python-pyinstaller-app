@@ -20,11 +20,10 @@ node {
                 // Change ownership of workspace
                 sh 'chown -R $(id -u):$(id -g) "$WORKSPACE"'
 
+                sh 'cd /workspace && ls -la'
                 sh 'cd /workspace && git status'
+                sh 'cd /workspace && git remote -v'
                 sh 'cd /workspace && git fetch --all'
-                sh 'cd /workspace && git reset --hard origin/master'
-                sh 'git checkout main || git checkout -b main'
-                sh 'cd /workspace && git pull origin master'
 
                 sh 'git branch -a'
 
@@ -34,6 +33,8 @@ node {
                 //     git checkout main || git checkout -b main origin/master
                 //     git pull origin master
                 // '''
+
+                sh 'git checkout main || git checkout -b main'
 
                 sh 'git remote -v'
 
