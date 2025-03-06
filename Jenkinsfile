@@ -16,19 +16,12 @@ node {
     def buildSuccessful = false
     try {
         stage('Deliver') {
-            docker.image('python:3.9').inside('-u root --mount type=bind,source=$WORKSPACE,target=/workspace') {
-                sh 'pwd'
-                sh 'ls -la'
-                
+            docker.image('python:3.9').inside('-u root') {
                 // Change ownership of workspace
                 sh 'chown -R $(id -u):$(id -g) "$WORKSPACE"'
 
-                sh '''
-                    cd /workspace
-                    git remote set-url origin file://$WORKSPACE
-                    git remote -v
-                    git fetch --all
-                '''
+                sh 'git remote set-url origin file://$WORKSPACE'
+                sh 'git fetch --all'
 
                 sh 'git branch -a'
 
