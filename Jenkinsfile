@@ -20,7 +20,11 @@ node {
                 // Change ownership of workspace
                 sh 'chown -R $(id -u):$(id -g) "$WORKSPACE"'
 
-                sh 'git show -s --pretty=%D HEAD'
+                sh 'git branch -a'
+
+                sh 'git checkout -b main'
+
+                sh 'git branch -a'
                 
                 sh '''
                     pip install pyinstaller
