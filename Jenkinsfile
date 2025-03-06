@@ -14,7 +14,7 @@ node {
 
     def buildSuccessful = false
     try {
-        stage('Deliver') {
+        stage('Deploy') {
             docker.image('python:3.9').inside('-u root') {
                 withCredentials([string(credentialsId: 'HEROKU_API_KEY', variable: 'HEROKU_API_KEY')]) {
                     sh 'curl https://cli-assets.heroku.com/install.sh | sh'
