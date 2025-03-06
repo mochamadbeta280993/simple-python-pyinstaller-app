@@ -6,8 +6,6 @@ node {
 
         // Remove any existing Git lock file
         sh 'rm -f /var/jenkins_home/workspace/submission-cicd-pipeline-mochamadbeta/.git/config.lock || true'
-        
-        checkout scm
     }
 
     stage('Build') {
