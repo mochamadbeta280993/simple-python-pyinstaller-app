@@ -24,7 +24,14 @@ node {
 
                 sh 'git status'
 
-                sh 'git checkout remotes/origin/master'
+                sh '''
+                    git fetch --all
+                    git reset --hard origin/master
+                    git checkout main || git checkout -b main origin/master
+                    git pull origin master
+                '''
+
+                // sh 'git checkout remotes/origin/master'
                 // sh 'git checkout main || git checkout -b main'
 
                 sh 'git status'
