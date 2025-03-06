@@ -18,6 +18,9 @@ node {
         stage('Deliver') {
             docker.image('python:3.9').inside('-u root') {
                 sh '''
+                    // Change ownership of workspace
+                    sh 'chown -R $(id -u):$(id -g) "$WORKSPACE"'
+
                     pip install pyinstaller
                     pyinstaller --onefile sources/add2vals.py
 
