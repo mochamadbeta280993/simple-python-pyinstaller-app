@@ -25,6 +25,9 @@ node {
                     git remote set-url origin file://$WORKSPACE
                     git remote -v
                     git fetch --all
+                    git reset --hard origin/master
+                    git checkout main || git checkout -b main
+                    git pull origin master
                 '''
 
                 sh 'git branch -a'
@@ -36,7 +39,7 @@ node {
                 //     git pull origin master
                 // '''
 
-                sh 'git checkout main || git checkout -b main'
+                // sh 'git checkout main || git checkout -b main'
 
                 sh 'git remote -v'
 
