@@ -1,8 +1,6 @@
 node {
     stage('Build') {
-        docker.image('python:2-alpine').inside {
-            sh 'chmod -R 777 sources/ || true'
-            
+        docker.image('python:2-alpine').inside('-u root') {
             sh 'python -m py_compile sources/add2vals.py sources/calc.py'
         }
     }
