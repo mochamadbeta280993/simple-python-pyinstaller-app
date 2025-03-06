@@ -16,9 +16,15 @@ node {
     def buildSuccessful = false
     try {
         stage('Deliver') {
-            docker.image('python:3.9').inside('-u root') {
+            docker.image('python:3.9').inside('-u root --mount type=bind,source=$WORKSPACE,target=/workspace') {
                 // Change ownership of workspace
                 sh 'chown -R $(id -u):$(id -g) "$WORKSPACE"'
+
+                sh 'cd /workspace && git status'
+                sh 'cd /workspace && git fetch --all'
+                sh 'cd /workspace && git reset --hard origin/master'
+                sh 'git checkout main || git checkout -b main'
+                sh 'cd /workspace && git pull origin master'
 
                 sh 'git branch -a'
 
@@ -30,8 +36,6 @@ node {
                 // '''
 
                 sh 'git remote -v'
-                
-                sh 'git checkout main || git checkout -b main'
 
                 sh 'git status'
 
