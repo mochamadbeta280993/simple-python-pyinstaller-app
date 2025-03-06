@@ -28,10 +28,10 @@ node {
                     sh 'heroku git:remote -a submission-cicd-pipeline-mba'
 
                     // Set OpenSSL legacy mode before pushing
-                    heroku config:set NODE_OPTIONS=--openssl-legacy-provider -a submission-cicd-pipeline-mba
+                    sh 'heroku config:set NODE_OPTIONS=--openssl-legacy-provider -a submission-cicd-pipeline-mba'
 
                     // Push to Heroku
-                    git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main
+                    sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main'
 
                     // sh 'pip install pyinstaller'
 
