@@ -6,10 +6,11 @@ node {
 
         // Remove any existing Git lock file
         sh 'rm -f /var/jenkins_home/workspace/submission-cicd-pipeline-mochamadbeta/.git/config.lock || true'
+        
+        checkout scm
     }
 
     stage('Build') {
-        checkout scm        
         docker.image('python:2-alpine').inside {
             sh 'python -m py_compile sources/add2vals.py sources/calc.py'
         }
