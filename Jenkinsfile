@@ -1,17 +1,17 @@
 node {
-    // stage('Build') {
-    //     checkout scm        
-    //     docker.image('python:2-alpine').inside {
-    //         sh 'python -m py_compile sources/add2vals.py sources/calc.py'
-    //     }
-    // }
+    stage('Build') {
+        checkout scm        
+        docker.image('python:2-alpine').inside {
+            sh 'python -m py_compile sources/add2vals.py sources/calc.py'
+        }
+    }
 
-    // stage('Test') {
-    //     docker.image('qnib/pytest').inside {
-    //         sh 'py.test --verbose --junit-xml test-reports/results.xml sources/test_calc.py'
-    //     }
-    //     junit 'test-reports/results.xml'
-    // }
+    stage('Test') {
+        docker.image('qnib/pytest').inside {
+            sh 'py.test --verbose --junit-xml test-reports/results.xml sources/test_calc.py'
+        }
+        junit 'test-reports/results.xml'
+    }
 
     def buildSuccessful = false
     try {
@@ -32,10 +32,6 @@ node {
 
                     // Push to Heroku
                     sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main'
-
-                    // sh 'pip install pyinstaller'
-
-                    // sh 'pyinstaller --onefile sources/add2vals.py'
                 }
             }
             buildSuccessful = true
