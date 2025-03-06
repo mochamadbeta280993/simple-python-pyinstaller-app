@@ -20,11 +20,9 @@ node {
                 // Change ownership of workspace
                 sh 'chown -R $(id -u):$(id -g) "$WORKSPACE"'
 
-                sh 'git branch -a'
-
                 sh 'git checkout -b main'
 
-                sh 'git branch -a'
+                sh 'cat Jenkinsfile'
                 
                 sh '''
                     pip install pyinstaller
