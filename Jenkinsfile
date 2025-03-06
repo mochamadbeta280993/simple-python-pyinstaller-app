@@ -1,10 +1,4 @@
 node {
-    stage('Clean Workspace') {
-        steps {
-            cleanWs()  // This will wipe out the workspace before the build starts
-        }
-    }
-
     stage('Build') {
         docker.image('python:2-alpine').inside('-u root') {
             sh 'ls -R'
