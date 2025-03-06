@@ -22,10 +22,11 @@ node {
                     // Change ownership of workspace
                     sh 'chown -R $(id -u):$(id -g) "$WORKSPACE"'
 
-                    // sh 'git checkout main || git checkout -b main origin/main'
-                    sh 'git branch -a'
+                    sh 'git checkout main || git checkout -b main origin/main'
 
                     sh 'heroku git:remote -a submission-cicd-pipeline-mba'
+
+                    sh 'heroku buildpacks:set heroku/python -a submission-cicd-pipeline-mba'
 
                     // Set OpenSSL legacy mode before pushing
                     sh 'heroku config:set NODE_OPTIONS=--openssl-legacy-provider -a submission-cicd-pipeline-mba'
