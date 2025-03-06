@@ -22,6 +22,8 @@ node {
 
                 sh 'git branch -a'
 
+                sh 'git remote -v'
+
                 sh 'git checkout remotes/origin/master'
                 // sh 'git checkout main || git checkout -b main'
 
