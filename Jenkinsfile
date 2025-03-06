@@ -26,8 +26,6 @@ node {
 
                     sh 'heroku git:remote -a submission-cicd-pipeline-mba'
 
-                    sh 'heroku buildpacks:set heroku/python -a submission-cicd-pipeline-mba'
-
                     // Set OpenSSL legacy mode before pushing
                     sh 'heroku config:set NODE_OPTIONS=--openssl-legacy-provider -a submission-cicd-pipeline-mba'
 
