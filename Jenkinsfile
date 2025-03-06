@@ -17,10 +17,10 @@ node {
     try {
         stage('Deliver') {
             docker.image('python:3.9').inside('-u root') {
+                // Change ownership of workspace
+                sh 'chown -R $(id -u):$(id -g) "$WORKSPACE"'
+                
                 sh '''
-                    // Change ownership of workspace
-                    sh 'chown -R $(id -u):$(id -g) "$WORKSPACE"'
-
                     git branch -a
 
                     pip install pyinstaller
