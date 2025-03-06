@@ -25,8 +25,6 @@ node {
                 sh 'git status'
 
                 sh '''
-                    git fetch --all
-                    git reset --hard origin/master
                     git checkout main || git checkout -b main origin/master
                     git pull origin master
                 '''
