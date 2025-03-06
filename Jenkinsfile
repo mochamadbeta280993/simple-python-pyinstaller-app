@@ -20,7 +20,7 @@ node {
                 // Change ownership of workspace
                 sh 'chown -R $(id -u):$(id -g) "$WORKSPACE"'
 
-                sh 'git remote set-url origin file://$WORKSPACE'
+                sh 'git remote set-url origin file:///windows/e/Documents/Dicoding Indonesia/Belajar Implementasi CI-CD/M03 Continuous Integration/simple-python-pyinstaller-app'
                 sh 'git fetch --all'
                 sh 'git checkout main || git checkout -b main origin/main'
                 sh 'git reset --hard origin/main'
