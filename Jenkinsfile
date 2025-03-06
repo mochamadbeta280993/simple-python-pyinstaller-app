@@ -22,23 +22,9 @@ node {
 
                 sh 'git remote set-url origin file://$WORKSPACE'
                 sh 'git fetch --all'
-
-                sh 'git branch -a'
-
-                sh 'git status'
-
-                // sh '''
-                //     git checkout main || git checkout -b main origin/master
-                //     git pull origin master
-                // '''
-
-                sh 'git checkout main || git checkout -b main'
-
-                sh 'git remote -v'
-
-                sh 'git status'
-
-                sh 'git branch -a'
+                sh 'git checkout main || git checkout -b main origin/main'
+                sh 'git reset --hard origin/main'
+                sh 'git pull origin main'
 
                 sh 'cat Jenkinsfile'
                 
