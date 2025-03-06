@@ -22,7 +22,7 @@ node {
                     // Change ownership of workspace
                     sh 'chown -R $(id -u):$(id -g) "$WORKSPACE"'
 
-                    sh 'ls -la'
+                    sh 'ls -R'
 
                     sh 'git checkout main || git checkout -b main origin/main'
 
