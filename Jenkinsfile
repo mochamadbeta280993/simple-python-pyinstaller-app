@@ -23,7 +23,7 @@ node {
                     // Change ownership of workspace
                     sh 'chown -R $(id -u):$(id -g) "$WORKSPACE"'
 
-//                    sh 'git checkout main || git checkout -b main origin/main'
+                    sh 'git checkout main || git checkout -b main origin/main'
 
                     sh 'heroku git:remote -a submission-cicd-pipeline-mba'
 
