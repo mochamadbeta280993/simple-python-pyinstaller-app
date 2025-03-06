@@ -1,6 +1,7 @@
 node {
     stage('Build') {
         docker.image('python:2-alpine').inside('-u root') {
+            sh 'ls -R'
             sh 'python -m py_compile sources/add2vals.py sources/calc.py'
         }
     }
@@ -21,8 +22,6 @@ node {
                     
                     // Change ownership of workspace
                     sh 'chown -R $(id -u):$(id -g) "$WORKSPACE"'
-
-                    sh 'ls -R'
 
                     sh 'git checkout main || git checkout -b main origin/main'
 
