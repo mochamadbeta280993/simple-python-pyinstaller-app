@@ -17,6 +17,9 @@ node {
     try {
         stage('Deliver') {
             docker.image('python:3.9').inside('-u root --mount type=bind,source=$WORKSPACE,target=/workspace') {
+                sh 'pwd'
+                sh 'ls -la'
+                
                 // Change ownership of workspace
                 sh 'chown -R $(id -u):$(id -g) "$WORKSPACE"'
 
@@ -25,9 +28,6 @@ node {
                     git remote set-url origin file://$WORKSPACE
                     git remote -v
                     git fetch --all
-                    git reset --hard origin/master
-                    git checkout main || git checkout -b main
-                    git pull origin master
                 '''
 
                 sh 'git branch -a'
@@ -39,7 +39,7 @@ node {
                 //     git pull origin master
                 // '''
 
-                // sh 'git checkout main || git checkout -b main'
+                sh 'git checkout main || git checkout -b main'
 
                 sh 'git remote -v'
 
