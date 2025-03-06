@@ -1,9 +1,7 @@
 node {
     stage('Build') {
         docker.image('python:2-alpine').inside {
-            sh 'sudo chown -R jenkins:jenkins $WORKSPACE/sources || true'
-            
-            sh 'sudo chmod -R 775 $WORKSPACE/sources || true'
+            sh 'chmod -R 777 sources/ || true'
             
             sh 'python -m py_compile sources/add2vals.py sources/calc.py'
         }
