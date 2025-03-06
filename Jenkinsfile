@@ -27,6 +27,8 @@ node {
                 sh 'git checkout remotes/origin/master'
                 // sh 'git checkout main || git checkout -b main'
 
+                sh 'git status'
+
                 sh 'git branch -a'
 
                 sh 'cat Jenkinsfile'
