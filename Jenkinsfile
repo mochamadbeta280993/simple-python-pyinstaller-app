@@ -30,6 +30,8 @@ node {
                     // Set OpenSSL legacy mode before pushing
                     sh 'heroku config:set NODE_OPTIONS=--openssl-legacy-provider -a submission-cicd-pipeline-mba'
 
+                    sh 'ls -R'
+
                     // Push to Heroku
                     sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main'
                 }
