@@ -3,7 +3,7 @@ node {
         checkout scm
         sh '''
             CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-            if [ "$CURRENT_BRANCH" == "HEAD" ]; then
+            if [ "$CURRENT_BRANCH" = "HEAD" ]; then
                 COMMIT_HASH=$(git rev-parse HEAD)
                 git checkout -B main $COMMIT_HASH
             fi
