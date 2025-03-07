@@ -25,6 +25,7 @@ node {
                     sh 'chown -R $(id -u):$(id -g) "$WORKSPACE"'
 
                     sh 'git branch -a'
+                    sh 'ls -R'
 
                     sh 'heroku git:remote -a submission-cicd-pipeline-mba'
 
