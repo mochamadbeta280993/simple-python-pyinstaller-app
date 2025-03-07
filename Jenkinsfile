@@ -90,7 +90,7 @@ node {
             }
             // Mark deployment as successful
             deploySuccessful = true
-        } catch () {
+        } catch (err) {
             // If deployment fails, report an error and fail the pipeline
             error "Deploy failed: ${err}"
         } finally {
