@@ -1,8 +1,11 @@
 node {
-    stage('Checkout SCM') {
-        sh 'sudo chown -R jenkins:jenkins /var/jenkins_home/workspace'
-        sh 'sudo chmod -R 755 /var/jenkins_home/workspace'
+    stage('Preparation') {
+        sh '''
+            sudo chown -R jenkins:jenkins /var/jenkins_home/workspace
+            sudo chmod -R 755 /var/jenkins_home/workspace
+        '''
         checkout scm
+        
         sh '''
             CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
             if [ "$CURRENT_BRANCH" = "HEAD" ]; then
