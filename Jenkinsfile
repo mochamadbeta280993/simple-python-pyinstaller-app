@@ -16,7 +16,6 @@ node {
     try {
         stage('Deploy') {
             checkout scm
-            sh 'ls -R'
             docker.image('python:3.9').inside('-u root') {
                 withCredentials([string(credentialsId: 'HEROKU_API_KEY', variable: 'HEROKU_API_KEY')]) {
                     sh 'curl https://cli-assets.heroku.com/install.sh | sh'
@@ -25,14 +24,15 @@ node {
                     sh 'chown -R $(id -u):$(id -g) "$WORKSPACE"'
 
                     sh 'git branch -a'
+                    sh 'COMMIT_HASH=$(git rev-parse HEAD)'
+                    sh 'git checkout -B main $COMMIT_HASH'
+                    sh 'git branch -a'
                     sh 'ls -R'
 
                     sh 'heroku git:remote -a submission-cicd-pipeline-mba'
 
                     // Set OpenSSL legacy mode before pushing
                     sh 'heroku config:set NODE_OPTIONS=--openssl-legacy-provider -a submission-cicd-pipeline-mba'
-
-                    sh 'ls -R'
 
                     // Push to Heroku
                     sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main'
