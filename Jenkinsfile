@@ -1,7 +1,7 @@
 node {
     stage('Build') {
-        chown -R jenkins:jenkins /var/jenkins_home/workspace/
-        chmod -R 775 /var/jenkins_home/workspace/
+        sh 'chown -R jenkins:jenkins /var/jenkins_home/workspace/'
+        sh 'chmod -R 775 /var/jenkins_home/workspace/'
         checkout scm
         docker.image('python:2-alpine').inside('-u root') {
             sh 'ls -R'
