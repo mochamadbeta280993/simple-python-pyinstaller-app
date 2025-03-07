@@ -1,5 +1,9 @@
 node {
     stage('Checkout SCM') {
+        sh '''
+            chown -R $(id -u):$(id -g) "$WORKSPACE"
+            chmod -R 755 "$WORKSPACE"
+        '''
         checkout scm
         sh '''
             CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
