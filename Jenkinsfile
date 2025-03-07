@@ -1,6 +1,7 @@
 node {
     stage('Checkout SCM') {
-        sh 'docker exec -u root jenkins-blueocean sh -c "chown -R jenkins:jenkins /var/jenkins_home/workspace && chmod -R 755 /var/jenkins_home/workspace"'
+        sh 'sudo chown -R jenkins:jenkins /var/jenkins_home/workspace'
+        sh 'sudo chmod -R 755 /var/jenkins_home/workspace'
         checkout scm
         sh '''
             CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
