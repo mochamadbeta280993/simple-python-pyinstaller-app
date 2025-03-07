@@ -1,8 +1,6 @@
 node {
     stage('Build') {
-        checkout scm
         docker.image('python:2-alpine').inside('-u root') {
-            sh 'ls -R'
             sh 'python -m py_compile sources/add2vals.py sources/calc.py'
         }
     }
@@ -17,6 +15,7 @@ node {
     def buildSuccessful = false
     try {
         stage('Deploy') {
+            checkout scm
             docker.image('python:3.9').inside('-u root') {
                 withCredentials([string(credentialsId: 'HEROKU_API_KEY', variable: 'HEROKU_API_KEY')]) {
                     sh 'curl https://cli-assets.heroku.com/install.sh | sh'
