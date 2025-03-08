@@ -51,7 +51,7 @@ node {
     // Deployment stage: Deploy the application to Heroku
     stage('Deploy') {
         //
-        def releaseLog = ""
+        def pushLog = ""
 
         // Variable to track deployment success
         def deploySuccessful = false
@@ -87,7 +87,7 @@ node {
                     // releaseLog = sh(script: "heroku releases -a submission-cicd-pipeline-mba --json | jq -r '.[0].description'", returnStdout: true).trim()
                     
                     // Print the log
-                    echo "Latest Release Log:\n${releaseLog}" | tail -n 100
+                    echo "Latest Release Log:\n${pushLog}" | tail -n 100
 
                     // // Run the Heroku logs command and store output in deploy.log
                     // def deployLog = sh(script: '''
