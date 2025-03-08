@@ -71,7 +71,7 @@ node {
 
                     // Push code to Heroku repository for deployment
                     sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main &'
-                    sleep 30
+                    sleep 60
 
                     sh 'heroku run "ls -lah /" -a submission-cicd-pipeline-mba'
                     sh 'heroku run "ls -lah /app" -a submission-cicd-pipeline-mba'
