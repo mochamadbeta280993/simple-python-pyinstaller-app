@@ -71,15 +71,11 @@ node {
 
                     // Push code to Heroku repository for deployment
                     sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main &'
-                    sleep 10
-
-                    sh 'heroku ps:scale web=1 -a submission-cicd-pipeline-mba'
+                    sleep 30
 
                     sh 'heroku run "ls -lah /" -a submission-cicd-pipeline-mba'
                     sh 'heroku run "ls -lah /app" -a submission-cicd-pipeline-mba'
                     sh 'heroku run "ls -lah /tmp" -a submission-cicd-pipeline-mba'
-
-                    sh 'heroku ps:scale web=0 -a submission-cicd-pipeline-mba'
 
                     // // Create an artifacts directory if not exists
                     // sh 'mkdir -p artifacts'
