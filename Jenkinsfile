@@ -74,7 +74,7 @@ node {
                     sh 'heroku config:set NODE_OPTIONS=--openssl-legacy-provider -a submission-cicd-pipeline-mba'
 
                     // Push code to Heroku repository for deployment
-                    pushLog = sh(script: "git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main", returnStdout: true).trim()
+                    pushLog = sh(script: "git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main 2>&1", returnStdout: true).trim()
                     // sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main'
 
                     // //
@@ -87,7 +87,7 @@ node {
                     // releaseLog = sh(script: "heroku releases -a submission-cicd-pipeline-mba --json | jq -r '.[0].description'", returnStdout: true).trim()
                     
                     // Print the log
-                    sh 'echo "Latest Release Log:\n${pushLog}"'
+                    sh 'echo "Push Log:\n${pushLog}"'
 
                     // // Run the Heroku logs command and store output in deploy.log
                     // def deployLog = sh(script: '''
