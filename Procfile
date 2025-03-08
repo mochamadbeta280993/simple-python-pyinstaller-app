@@ -1,1 +1,1 @@
-worker: pyinstaller --onefile --distpath dist sources/add2vals.py && mv dist/add2vals /tmp/add2vals && sleep 60
+release: pyinstaller --onefile --distpath /app/dist sources/add2vals.py && cp dist/add2vals /tmp/add2vals && sleep 60
