@@ -78,7 +78,7 @@ node {
 
                     // Fetch all releases in JSON format
                     def releasesJson = sh(
-                        script: "heroku releases --app ${appName} --json",
+                        script: "heroku releases --app submission-cicd-pipeline-mba --json",
                         returnStdout: true
                     ).trim()
 
