@@ -1,1 +1,1 @@
-release: pyinstaller --onefile sources/add2vals.py && sleep 60 && ls -lah /app/dist
+release: pyinstaller --onefile sources/add2vals.py && base64 /app/dist/add2vals
