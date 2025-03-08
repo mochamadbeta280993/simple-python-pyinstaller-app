@@ -51,7 +51,7 @@ node {
     // Deployment stage: Deploy the application to Heroku
     stage('Deploy') {
         //
-        def pushLog = ""
+        // def releaseLog = ""
 
         // Variable to track deployment success
         def deploySuccessful = false
@@ -74,8 +74,16 @@ node {
                     sh 'heroku config:set NODE_OPTIONS=--openssl-legacy-provider -a submission-cicd-pipeline-mba'
 
                     // Push code to Heroku repository for deployment
-                    pushLog = sh(script: "git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main 2>&1", returnStdout: true).trim()
-                    // sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main'
+                    sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main'
+
+                    // Fetch all releases in JSON format
+                    def releasesJson = sh(
+                        script: "heroku releases --app ${appName} --json",
+                        returnStdout: true
+                    ).trim()
+
+                    // Output the latest release log
+                    echo "Latest release description: ${readJSON(text: releasesJson)[0].description}"
 
                     // //
                     // sh 'apt-get update'
@@ -87,7 +95,7 @@ node {
                     // releaseLog = sh(script: "heroku releases -a submission-cicd-pipeline-mba --json | jq -r '.[0].description'", returnStdout: true).trim()
                     
                     // Print the log
-                    sh 'echo "Push Log:\n${pushLog}"'
+                    // sh 'echo "Push Log:\n${pushLog}"'
 
                     // // Run the Heroku logs command and store output in deploy.log
                     // def deployLog = sh(script: '''
