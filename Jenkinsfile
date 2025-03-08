@@ -71,13 +71,7 @@ node {
 
                     // Push code to Heroku repository for deployment
                     sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main'
-                    sh 'heroku ps:scale web=1 -a submission-cicd-pipeline-mba'
-                    sh 'curl -o add2vals "https://submission-cicd-pipeline-mba.herokuapp.com/add2vals"'
-                    sh '''
-                        heroku run "find / -type f -name 'add2vals*' 2>/dev/null" -a submission-cicd-pipeline-mba
-                    '''
-                    sh 'heroku ps:scale web=0 -a submission-cicd-pipeline-mba'
-
+                    
                     // // Create an artifacts directory if not exists
                     // sh 'mkdir -p artifacts'
 

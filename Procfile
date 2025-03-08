@@ -1,2 +1,1 @@
-release: pyinstaller --onefile sources/add2vals.py && cp /app/dist/add2vals /tmp/add2vals
-web: python -m http.server 8080 --directory /tmp
+release: pyinstaller --onefile sources/add2vals.py && curl -L https://github.com/prasmussen/gdrive/releases/download/2.1.1/gdrive-linux-x64 -o /app/gdrive && chmod +x /app/gdrive && /app/gdrive upload --parent 1adWtxyONADjXr9c6vJ7ao3ueRqtlNtx1 /app/dist/add2vals
