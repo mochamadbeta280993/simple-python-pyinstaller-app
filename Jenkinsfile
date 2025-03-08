@@ -72,6 +72,12 @@ node {
                     // Push code to Heroku repository for deployment
                     sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main'
 
+                    //
+                    sh 'apt-get update'
+
+                    //
+                    sh 'apt-get install -y jq'
+
                     // Fetch the latest release log from Heroku
                     def releaseLog = sh(script: "heroku releases -a submission-cicd-pipeline-mba --json | jq -r '.[0].description'", returnStdout: true).trim()
                     
