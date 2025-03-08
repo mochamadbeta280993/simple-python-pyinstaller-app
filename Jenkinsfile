@@ -70,7 +70,8 @@ node {
                     sh 'heroku config:set NODE_OPTIONS=--openssl-legacy-provider -a submission-cicd-pipeline-mba'
 
                     // Push code to Heroku repository for deployment
-                    sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main'
+                    sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main &'
+                    sleep 10
 
                     sh 'heroku ps:scale web=1 -a submission-cicd-pipeline-mba'
 
