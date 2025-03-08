@@ -50,8 +50,12 @@ node {
 
     // Deployment stage: Deploy the application to Heroku
     stage('Deploy') {
+        //
+        def releaseLog = ""
+
         // Variable to track deployment success
         def deploySuccessful = false
+        
         try {
             // Run deployment process inside a Python 3.9 Docker container
             docker.image('python:3.9').inside('-u root') {
@@ -79,7 +83,7 @@ node {
                     sh 'apt-get install -y jq'
 
                     // Fetch the latest release log from Heroku
-                    def releaseLog = sh(script: "heroku releases -a submission-cicd-pipeline-mba --json | jq -r '.[0].description'", returnStdout: true).trim()
+                    releaseLog = sh(script: "heroku releases -a submission-cicd-pipeline-mba --json | jq -r '.[0].description'", returnStdout: true).trim()
                     
                     // Print the log
                     sh 'echo "Latest Release Log:" && echo "${releaseLog}" | tail -n 100'
