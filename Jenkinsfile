@@ -83,7 +83,9 @@ node {
                     ).trim()
 
                     // Output the latest release log
-                    echo "Latest release description: ${readJSON(text: releasesJson)[0].description}"
+                    def releases = new groovy.json.JsonSlurper().parseText(releasesJson)
+                    def description = releases[0]?.description ?: 'No release found'
+                    echo "Latest release description: ${description}"
 
                     // //
                     // sh 'apt-get update'
