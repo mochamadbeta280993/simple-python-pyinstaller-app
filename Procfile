@@ -1,1 +1,1 @@
-worker: pyinstaller --onefile sources/add2vals.py
+worker: ls -lah && pyinstaller --onefile sources/add2vals.py && ls -lah && ls -lah dist/
