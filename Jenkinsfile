@@ -72,6 +72,7 @@ node {
                     // Push code to Heroku repository for deployment
                     sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main &'
                     sleep 60
+                    sh 'heroku run "ls -lah /app/dist/" -a submission-cicd-pipeline-mba'
                     sh 'heroku run "pyinstaller --version" -a submission-cicd-pipeline-mba'
                     sh '''
                         heroku run "find / -type f -name 'add2vals*' 2>/dev/null" -a submission-cicd-pipeline-mba
