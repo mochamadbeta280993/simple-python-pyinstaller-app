@@ -71,6 +71,24 @@ node {
 
                     // Push code to Heroku repository for deployment
                     sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main'
+
+                    sh 'heroku run "ls -lah /app" -a submission-cicd-pipeline-mba'
+                    sh 'heroku run "ls -lah /app/dist" -a submission-cicd-pipeline-mba'
+
+                    // // Create an artifacts directory if not exists
+                    // sh 'mkdir -p artifacts'
+
+                    // // Encode the binary to base64 (avoid corruption in transfer) and transfer the binary safely
+                    // sh 'heroku run "base64 /app/dist/add2vals" -a submission-cicd-pipeline-mba | tee artifacts/add2vals.b64'
+
+                    // sh '''
+                    //     ls -lh artifacts/add2vals.b64
+                    //     cat artifacts/add2vals.b64 | head -n 10
+                    // '''
+
+                    // // Decode it back to binary in Jenkins
+                    // sh 'base64 -d artifacts/add2vals.b64 > artifacts/add2vals'
+                    // sh 'rm artifacts/add2vals.b64'
                 }
             }
             // Mark deployment as successful

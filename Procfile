@@ -1,1 +1,1 @@
-worker: ls -lah && pyinstaller --onefile sources/add2vals.py && ls -lah && ls -lah dist/
+worker: pyinstaller --onefile sources/add2vals.py && mv dist/add2vals /tmp/add2vals && ls -lah /tmp/ && sleep 60
