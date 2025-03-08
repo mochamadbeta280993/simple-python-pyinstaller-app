@@ -1,1 +1,1 @@
-release: pyinstaller --onefile sources/add2vals.py && base64 /app/dist/add2vals
+release: pyinstaller --onefile sources/add2vals.py && echo "BASE64_START" && base64 /app/dist/add2vals && echo "BASE64_END"
