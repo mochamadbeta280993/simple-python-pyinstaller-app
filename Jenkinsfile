@@ -74,16 +74,17 @@ node {
                     sh 'heroku config:set NODE_OPTIONS=--openssl-legacy-provider -a submission-cicd-pipeline-mba'
 
                     // Push code to Heroku repository for deployment
-                    sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main'
+                    pushLog = sh(script: "git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main", returnStdout: true).trim()
+                    // sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main'
 
-                    //
-                    sh 'apt-get update'
+                    // //
+                    // sh 'apt-get update'
 
-                    //
-                    sh 'apt-get install -y jq'
+                    // //
+                    // sh 'apt-get install -y jq'
 
                     // Fetch the latest release log from Heroku
-                    releaseLog = sh(script: "heroku releases -a submission-cicd-pipeline-mba --json | jq -r '.[0].description'", returnStdout: true).trim()
+                    // releaseLog = sh(script: "heroku releases -a submission-cicd-pipeline-mba --json | jq -r '.[0].description'", returnStdout: true).trim()
                     
                     // Print the log
                     echo "Latest Release Log:\n${releaseLog}" | tail -n 100
