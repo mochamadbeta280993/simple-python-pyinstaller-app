@@ -70,13 +70,13 @@ node {
                     sh 'heroku config:set NODE_OPTIONS=--openssl-legacy-provider -a submission-cicd-pipeline-mba'
 
                     // Push code to Heroku repository for deployment
-                    sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main &'
-                    sleep 60
-                    sh 'heroku run "ls -lah /app/dist/" -a submission-cicd-pipeline-mba'
-                    sh 'heroku run "pyinstaller --version" -a submission-cicd-pipeline-mba'
+                    sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main'
+                    sh 'heroku ps:scale web=1 -a submission-cicd-pipeline-mba'
+                    sh 'curl -o add2vals "https://submission-cicd-pipeline-mba.herokuapp.com/add2vals"'
                     sh '''
                         heroku run "find / -type f -name 'add2vals*' 2>/dev/null" -a submission-cicd-pipeline-mba
                     '''
+                    sh 'heroku ps:scale web=0 -a submission-cicd-pipeline-mba'
 
                     // // Create an artifacts directory if not exists
                     // sh 'mkdir -p artifacts'
