@@ -86,7 +86,7 @@ node {
                     releaseLog = sh(script: "heroku releases -a submission-cicd-pipeline-mba --json | jq -r '.[0].description'", returnStdout: true).trim()
                     
                     // Print the log
-                    sh 'echo "Latest Release Log:" && echo "${releaseLog}" | tail -n 100'
+                    echo "Latest Release Log:" && echo "${releaseLog}" | tail -n 100
 
                     // // Run the Heroku logs command and store output in deploy.log
                     // def deployLog = sh(script: '''
