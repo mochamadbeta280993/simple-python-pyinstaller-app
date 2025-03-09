@@ -72,8 +72,6 @@ node {
 
                     // Push code to Heroku repository for deployment
                     sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main'
-
-                    sh 'heroku logs --n 1500 --app submission-cicd-pipeline-mba'
                 }
             }
             // Mark deployment as successful
@@ -84,10 +82,8 @@ node {
         } finally {
             // If deployment was successful, archive the build artifacts
             if (deploySuccessful) {
-                // Verify if the downloaded file is valid
-                // sh 'ls -lh artifacts/add2vals'
-                // sh 'file artifacts/add2vals'
-                // sh 'sudo chmod +x artifacts/add2vals'
+                    sh 'echo "Hello from step 1" >> pipeline.log'
+                    sh 'cat pipeline.log'
                 
                 // Archive the retrieved binary so it appears in Jenkins artifacts
                 // archiveArtifacts 'artifacts/add2vals'
