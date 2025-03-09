@@ -97,11 +97,15 @@ node {
                         if (startIndex != -1 && endIndex != -1) {
                             extractedLogs = logLines[startIndex..endIndex]
                         } else {
-                            echo "❌ BASE64_START or BASE64_END not found in logs!"
+                            echo "BASE64_START or BASE64_END not found in logs!"
                         }
 
-                        // Print logs all at once (similar to `cat`)
-                        echo extractedLogs.join("\n")
+                        // Save logs to a file
+                        def logFile = "extracted_logs.txt"
+                        writeFile file: logFile, text: extractedLogs.join("\n")
+
+                        // Archive the log file as an artifact
+                        archiveArtifacts artifacts: logFile
                     }
                 }
             }
