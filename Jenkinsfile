@@ -76,16 +76,27 @@ node {
                     // Push code to Heroku repository for deployment
                     sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main'
 
-                    // Fetch all releases in JSON format
+                    def appName = 'submission-cicd-pipeline-mba'
+
+                    // Get the latest release's version
                     def releasesJson = sh(
-                        script: "heroku releases --app submission-cicd-pipeline-mba --json",
+                        script: "heroku releases --app ${appName} --json",
+                        returnStdout: true
+                    ).trim()
+                    def releases = new groovy.json.JsonSlurper().parseText(releasesJson)
+                    if (releases.isEmpty()) {
+                        error "No releases found for app ${appName}"
+                    }
+                    def latestReleaseVersion = releases[0].version
+
+                    // Fetch **all** logs for the latest release (remove --tail to avoid streaming)
+                    def releaseLogs = sh(
+                        script: "heroku logs --app ${appName} --release ${latestReleaseVersion}",
                         returnStdout: true
                     ).trim()
 
-                    // Output the latest release log
-                    def releases = new groovy.json.JsonSlurper().parseText(releasesJson)
-                    def description = releases[0]?.description ?: 'No release found'
-                    echo "Latest release description: ${description}"
+                    // Output all logs (will display fully in Jenkins console)
+                    echo "Latest release (${latestReleaseVersion}) logs:\n${releaseLogs}"
 
                     // //
                     // sh 'apt-get update'
