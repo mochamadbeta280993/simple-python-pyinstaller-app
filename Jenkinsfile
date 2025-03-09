@@ -3,7 +3,7 @@ node {
     stage('Preparation') {
         // Ensure Jenkins has proper ownership and permissions on the workspace
         sh 'sudo chown -R jenkins:jenkins /var/jenkins_home/workspace'
-        sh 'sudo chmod -R 755 /var/jenkins_home/workspace'
+        sh 'sudo chmod -R 777 /var/jenkins_home/workspace'
         
         // Check out the source code from the repository
         checkout scm
