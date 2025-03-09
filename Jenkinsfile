@@ -74,14 +74,34 @@ node {
                     sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main'
 
                     script {
-                        // Retrieve all available log lines
+                        // Retrieve all available logs
                         def logLines = currentBuild.rawBuild.getLog(Integer.MAX_VALUE)
 
-                        // Get the last 500 lines only (if there are at least 500 lines)
-                        def lastLogLines = logLines.size() > 1000 ? logLines[-1000..-1] : logLines
+                        // Variables to track log extraction
+                        def startIndex = -1
+                        def endIndex = -1
 
-                        // Print logs all at once (like 'cat pipeline.log')
-                        echo lastLogLines.join("\n")
+                        // Find indices of BASE64_START and BASE64_END
+                        logLines.eachWithIndex { line, index ->
+                            if (line.contains("BASE64_START")) {
+                                startIndex = index
+                            }
+                            if (line.contains("BASE64_END") && startIndex != -1) {
+                                endIndex = index
+                                return  // Stop searching once we find BASE64_END
+                            }
+                        }
+
+                        // Extract logs between BASE64_START and BASE64_END
+                        def extractedLogs = []
+                        if (startIndex != -1 && endIndex != -1) {
+                            extractedLogs = logLines[startIndex..endIndex]
+                        } else {
+                            echo "❌ BASE64_START or BASE64_END not found in logs!"
+                        }
+
+                        // Print logs all at once (similar to `cat`)
+                        echo extractedLogs.join("\n")
                     }
                 }
             }
