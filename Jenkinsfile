@@ -121,18 +121,16 @@ node {
                     // Retrieve all available logs
                     def logLines = currentBuild.rawBuild.getLog(Integer.MAX_VALUE)
 
-                    // Variables to track log extraction
+                    // Extract logs between BASE64_START and BASE64_END
                     def startIndex = -1
                     def endIndex = -1
-
-                    // Find indices of BASE64_START and BASE64_END
                     logLines.eachWithIndex { line, index ->
-                        if (line.contains("BASE64_START")) {
-                            startIndex = index
+                        if (startIndex == -1 && line.contains("BASE64_START")) {
+                            startIndex = index + 1 // Start AFTER BASE64_START
                         }
                         if (line.contains("BASE64_END") && startIndex != -1) {
-                            endIndex = index
-                            return  // Stop searching once we find BASE64_END
+                            endIndex = index - 1 // Stop BEFORE BASE64_END
+                            return
                         }
                     }
 
@@ -144,12 +142,20 @@ node {
                         echo "BASE64_START or BASE64_END not found in logs!"
                     }
 
-                    // Save logs to a file
-                    def logFile = "extracted_logs.txt"
-                    writeFile file: logFile, text: extractedLogs.join("\n")
+                    // Remove "remote: " prefix and trim whitespaces from each line
+                    extractedLogs = extractedLogs.collect { it.replaceFirst(/^remote:\s*/, "").trim() }
 
-                    // Archive the log file as an artifact
-                    archiveArtifacts artifacts: logFile
+                    // Save cleaned Base64 data to a file
+                    def encodedFile = "${env.WORKSPACE}/encoded_content.b64"
+                    writeFile file: encodedFile, text: extractedLogs.join("\n")
+
+                    // Decode Base64 to create an executable
+                    def executableFile = "${env.WORKSPACE}/output_executable"
+                    sh "base64 -d ${encodedFile} > ${executableFile}"
+                    sh "chmod +x ${executableFile}"  // Make it executable
+
+                    // Archive the executable
+                    archiveArtifacts artifacts: 'add2vals'
                 }
 
                 // Archive the retrieved binary so it appears in Jenkins artifacts
