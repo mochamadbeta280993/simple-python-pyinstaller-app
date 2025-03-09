@@ -107,17 +107,19 @@ node {
                         echo "BASE64_START or BASE64_END not found in logs!"
                     }
 
-                    // Remove "remote: " prefix and trim whitespaces from each line
-                    extractedLogs = extractedLogs.collect { it.replaceFirst(/^remote:\s*/, "").trim() }
+                    // Ensure clean Base64 encoding
+                    extractedLogs = extractedLogs.collect { 
+                        it.replaceFirst(/^remote:\s*/, "").trim()  // Remove "remote: " and trim spaces
+                    }.findAll { it =~ /^[A-Za-z0-9+\/=]+$/ }  // Ensure only valid Base64 characters remain
 
                     // Save cleaned Base64 data to a file
                     def encodedFile = "${env.WORKSPACE}/encoded_content.b64"
                     writeFile file: encodedFile, text: extractedLogs.join("\n")
 
                     // Decode Base64 to create an executable
-                    def executableFile = "${env.WORKSPACE}/output_executable"
-                    sh "base64 -d ${encodedFile} > ${executableFile}"
-                    sh "chmod +x ${executableFile}"  // Make it executable
+                    def executableFile = "${env.WORKSPACE}/add2vals"
+                    sh 'base64 -d ${encodedFile} > ${executableFile}'
+                    sh 'chmod +x ${executableFile}'  // Make it executable
 
                     // Archive the executable
                     archiveArtifacts artifacts: 'add2vals'
