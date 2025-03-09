@@ -50,9 +50,6 @@ node {
 
     // Deployment stage: Deploy the application to Heroku
     stage('Deploy') {
-        //
-        // def releaseLog = ""
-
         // Variable to track deployment success
         def deploySuccessful = false
         
@@ -74,62 +71,17 @@ node {
                     sh 'heroku config:set NODE_OPTIONS=--openssl-legacy-provider -a submission-cicd-pipeline-mba'
 
                     // Push code to Heroku repository for deployment
-                    sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main'
+                    // sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main'
 
-                    def appName = 'submission-cicd-pipeline-mba'
-
-                    try {
-                        // Fetch releases and log raw JSON for debugging
-                        def releasesJson = sh(
-                            script: "heroku releases --app ${appName} --json",
+                    script {
+                        def deploymentLogs = sh(
+                            script: 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main',
                             returnStdout: true
                         ).trim()
-                        echo "Raw releases JSON:\n${releasesJson}"
 
-                        // Parse JSON (ensure it's a List)
-                        def releases = new groovy.json.JsonSlurper().parseText(releasesJson) as List
-
-                        // Validate releases structure
-                        if (releases && !releases.isEmpty()) {
-                            def latestRelease = releases[0]
-
-                            // Safely access 'version' (handle LazyMap)
-                            def latestReleaseVersion = latestRelease.version?.toString() ?: 'v1'
-
-                            // Fetch all logs for the latest release
-                            def releaseLogs = sh(
-                                script: "heroku logs --app ${appName} --release ${latestReleaseVersion}",
-                                returnStdout: true
-                            ).trim()
-
-                            echo "Latest release (${latestReleaseVersion}) logs:\n${releaseLogs}"
-                        } else {
-                            error "No releases found or invalid JSON structure!"
-                        }
-                    } catch (Exception e) {
-                        echo "Error: ${e.message}"
-                        // Avoid accessing blocked methods like stackTrace
-                        // If needed, log the exception class and message
-                        echo "Exception Class: ${e.class.name}"
+                        // Output logs to Jenkins console
+                        echo "Deployment logs:\n${deploymentLogs}"
                     }
-
-                    // //
-                    // sh 'apt-get update'
-
-                    // //
-                    // sh 'apt-get install -y jq'
-
-                    // Fetch the latest release log from Heroku
-                    // releaseLog = sh(script: "heroku releases -a submission-cicd-pipeline-mba --json | jq -r '.[0].description'", returnStdout: true).trim()
-                    
-                    // Print the log
-                    // sh 'echo "Push Log:\n${pushLog}"'
-
-                    // // Run the Heroku logs command and store output in deploy.log
-                    // def deployLog = sh(script: '''
-                    //     set -o pipefail
-                    //     heroku logs --source release -a submission-cicd-pipeline-mba | awk '/BASE64_START/{flag=1;next}/BASE64_END/{flag=0}flag' > add2vals.b64
-                    // ''', returnStdout: true).trim()
                 }
             }
             // Mark deployment as successful
