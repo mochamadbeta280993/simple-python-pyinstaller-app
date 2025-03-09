@@ -1,9 +1,9 @@
 node {
     // Preparation stage: Set up workspace and ensure correct branch
-    stage('Preparation') {
+    stage("Preparation") {
         // Ensure Jenkins has proper ownership and permissions on the workspace
-        sh 'sudo chown -R jenkins:jenkins /var/jenkins_home/workspace'
-        sh 'sudo chmod -R 777 /var/jenkins_home/workspace'
+        sh "sudo chown -R jenkins:jenkins /var/jenkins_home/workspace"
+        sh "sudo chmod -R 777 /var/jenkins_home/workspace"
         
         // Check out the source code from the repository
         checkout scm
@@ -18,60 +18,68 @@ node {
         '''
         
         // Display the available branches and list all files in the workspace
-        sh 'git branch -a'
-        sh 'ls -R'
+        sh "git branch -a"
+        sh "ls -R"
     }
 
     // Build stage: Compile Python source files
-    stage('Build') {
+    stage("Build") {
         // Run the build process inside a Python 2 Alpine Docker container
-        docker.image('python:2-alpine').inside('-u root') {
+        docker.image("python:2-alpine").inside("-u root") {
             // Compile Python files to check for syntax errors
-            sh 'python -m py_compile sources/add2vals.py sources/calc.py'
+            sh "python -m py_compile sources/add2vals.py sources/calc.py"
         }
     }
 
     // Test stage: Run unit tests
-    stage('Test') {
+    stage("Test") {
         try {
             // Run tests inside a Docker container with pytest installed
-            docker.image('qnib/pytest').inside {
+            docker.image("qnib/pytest").inside {
                 // Execute the test script and generate a JUnit XML report
-                sh 'py.test --verbose --junit-xml test-reports/results.xml sources/test_calc.py'
+                sh "py.test --verbose --junit-xml test-reports/results.xml sources/test_calc.py"
             }
         } catch (err) {
             // If tests fail, report an error and fail the pipeline
             error "Test failed: ${err}"
         } finally {
             // Always publish test results, even if tests fail
-            junit 'test-reports/results.xml'
+            junit "test-reports/results.xml"
         }
     }
 
+    // Manual Approval stage: Request approval to proceed to the Deployment stage
+    stage("Manual Approval") {
+        // Pause the pipeline and ask for manual approval before deployment
+        input message: 'Lanjutkan ke tahap Deploy?', ok: 'Proceed'
+    }
+
     // Deployment stage: Deploy the application to Heroku
-    stage('Deploy') {
+    stage("Deploy") {
         // Variable to track deployment success
         def deploySuccessful = false
         
         try {
             // Run deployment process inside a Python 3.9 Docker container
-            docker.image('python:3.9').inside('-u root') {
+            docker.image("python:3.9").inside("-u root") {
                 // Use credentials stored in Jenkins to authenticate with Heroku
-                withCredentials([string(credentialsId: 'HEROKU_API_KEY', variable: 'HEROKU_API_KEY')]) {
+                withCredentials([string(credentialsId: "HEROKU_API_KEY", variable: "HEROKU_API_KEY")]) {
                     // Install Heroku CLI
-                    sh 'curl https://cli-assets.heroku.com/install.sh | sh'
+                    sh "curl https://cli-assets.heroku.com/install.sh | sh"
                     
                     // Change workspace ownership to avoid permission issues
-                    sh 'chown -R $(id -u):$(id -g) "$WORKSPACE"'
+                    sh '''
+                        chown -R $(id -u):$(id -g) "$WORKSPACE"
+                    '''
 
                     // Add Heroku as a remote repository
-                    sh 'heroku git:remote -a submission-cicd-pipeline-mba'
+                    sh "heroku git:remote -a submission-cicd-pipeline-mba"
 
                     // Set OpenSSL legacy mode before pushing to Heroku
-                    sh 'heroku config:set NODE_OPTIONS=--openssl-legacy-provider -a submission-cicd-pipeline-mba'
+                    sh "heroku config:set NODE_OPTIONS=--openssl-legacy-provider -a submission-cicd-pipeline-mba"
 
                     // Push code to Heroku repository for deployment
-                    sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main'
+                    sh "git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main"
                 }
             }
             // Mark deployment as successful
@@ -123,14 +131,17 @@ node {
                     // Decode Base64 to create an executable
                     def executableFile = "${outputDir}/add2vals"
                     sh "base64 -d -i ${encodedFile} > ${executableFile}"
-                    sh 'sudo chown -R jenkins:jenkins /var/jenkins_home/workspace'
-                    sh 'sudo chmod -R 777 /var/jenkins_home/workspace'
+                    sh "sudo chown -R jenkins:jenkins /var/jenkins_home/workspace"
+                    sh "sudo chmod -R 777 /var/jenkins_home/workspace"
                     sh "chmod +x ${executableFile}"  // Make it executable
 
                     // Archive the executable
-                    archiveArtifacts artifacts: 'decoded_files/add2vals'
+                    archiveArtifacts artifacts: "decoded_files/add2vals"
                 }
             }
+
+            // Pause the pipeline execution for 1 minute
+            sh "sleep 60"
         }
     }
 }
