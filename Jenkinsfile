@@ -71,17 +71,9 @@ node {
                     sh 'heroku config:set NODE_OPTIONS=--openssl-legacy-provider -a submission-cicd-pipeline-mba'
 
                     // Push code to Heroku repository for deployment
-                    // sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main'
+                    sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main'
 
-                    script {
-                        def deploymentLogs = sh(
-                            script: 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main',
-                            returnStdout: true
-                        ).trim()
-
-                        // Output logs to Jenkins console
-                        echo "Deployment logs:\n${deploymentLogs}"
-                    }
+                    sh 'heroku logs --n 1500 --app submission-cicd-pipeline-mba'
                 }
             }
             // Mark deployment as successful
