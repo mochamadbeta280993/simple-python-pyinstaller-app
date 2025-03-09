@@ -72,6 +72,14 @@ node {
 
                     // Push code to Heroku repository for deployment
                     sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main'
+
+                    script {
+                        // Retrieve the last 500 lines of the console log
+                        def logLines = currentBuild.rawBuild.getLog(500)
+                        logLines.each { line ->
+                            echo "Log: ${line}"
+                        }
+                    }
                 }
             }
             // Mark deployment as successful
@@ -82,8 +90,6 @@ node {
         } finally {
             // If deployment was successful, archive the build artifacts
             if (deploySuccessful) {
-                    sh 'cat pipeline.log'
-                
                 // Archive the retrieved binary so it appears in Jenkins artifacts
                 // archiveArtifacts 'artifacts/add2vals'
             }
