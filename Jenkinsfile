@@ -116,17 +116,23 @@ node {
                     def encodedFile = "${env.WORKSPACE}/encoded_content.b64"
                     writeFile file: encodedFile, text: extractedLogs.join("\n")
 
-                    // Decode Base64 to create an executable
-                    def executableFile = "${env.WORKSPACE}/add2vals"
-                    sh 'base64 -d ${encodedFile} > ${executableFile}'
+                    // Ensure output directory exists before decoding
+                    def outputDir = "${env.WORKSPACE}/decoded_files"
+                    sh 'sudo chown -R jenkins:jenkins /var/jenkins_home/workspace'
+                    sh 'sudo chmod -R 777 /var/jenkins_home/workspace'
+                    sh "mkdir -p ${outputDir}"  // Create directory if it doesn't exist
 
-                    //
+                    // Decode Base64 to create an executable
+                    def executableFile = "${outputDir}/add2vals"
+                    sh 'sudo chown -R jenkins:jenkins /var/jenkins_home/workspace'
+                    sh 'sudo chmod -R 777 /var/jenkins_home/workspace'
+                    sh "base64 -d -i ${encodedFile} > ${executableFile}"
                     sh 'sudo chown -R jenkins:jenkins /var/jenkins_home/workspace'
                     sh 'sudo chmod -R 777 /var/jenkins_home/workspace'
                     sh 'chmod +x ${executableFile}'  // Make it executable
 
                     // Archive the executable
-                    archiveArtifacts artifacts: 'add2vals'
+                    archiveArtifacts artifacts: 'decoded_files/add2vals'
                 }
             }
         }
