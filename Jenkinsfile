@@ -86,33 +86,31 @@ node {
                         ).trim()
                         echo "Raw releases JSON:\n${releasesJson}"
 
-                        // Parse JSON
-                        def releases = new groovy.json.JsonSlurper().parseText(releasesJson)
+                        // Parse JSON (ensure it's a List)
+                        def releases = new groovy.json.JsonSlurper().parseText(releasesJson) as List
 
                         // Validate releases structure
-                        if (releases instanceof List && !releases.isEmpty()) {
+                        if (releases && !releases.isEmpty()) {
                             def latestRelease = releases[0]
 
-                            // Ensure 'version' exists
-                            if (latestRelease.version) {
-                                def latestReleaseVersion = latestRelease.version
+                            // Safely access 'version' (handle LazyMap)
+                            def latestReleaseVersion = latestRelease.version?.toString() ?: 'v1'
 
-                                // Fetch all logs for the latest release
-                                def releaseLogs = sh(
-                                    script: "heroku logs --app ${appName} --release ${latestReleaseVersion}",
-                                    returnStdout: true
-                                ).trim()
+                            // Fetch all logs for the latest release
+                            def releaseLogs = sh(
+                                script: "heroku logs --app ${appName} --release ${latestReleaseVersion}",
+                                returnStdout: true
+                            ).trim()
 
-                                echo "Latest release (${latestReleaseVersion}) logs:\n${releaseLogs}"
-                            } else {
-                                error "Latest release has no 'version' field!"
-                            }
+                            echo "Latest release (${latestReleaseVersion}) logs:\n${releaseLogs}"
                         } else {
                             error "No releases found or invalid JSON structure!"
                         }
                     } catch (Exception e) {
                         echo "Error: ${e.message}"
-                        echo "Stacktrace: ${e.stackTrace}"
+                        // Avoid accessing blocked methods like stackTrace
+                        // If needed, log the exception class and message
+                        echo "Exception Class: ${e.class.name}"
                     }
 
                     // //
