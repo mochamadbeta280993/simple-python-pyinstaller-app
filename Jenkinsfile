@@ -129,7 +129,7 @@ node {
                     sh "base64 -d -i ${encodedFile} > ${executableFile}"
                     sh 'sudo chown -R jenkins:jenkins /var/jenkins_home/workspace'
                     sh 'sudo chmod -R 777 /var/jenkins_home/workspace'
-                    sh 'chmod +x ${executableFile}'  // Make it executable
+                    sh "chmod +x ${executableFile}"  // Make it executable
 
                     // Archive the executable
                     archiveArtifacts artifacts: 'decoded_files/add2vals'
