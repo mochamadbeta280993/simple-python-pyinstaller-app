@@ -82,7 +82,6 @@ node {
         } finally {
             // If deployment was successful, archive the build artifacts
             if (deploySuccessful) {
-                    sh 'echo "Hello from step 1" >> pipeline.log'
                     sh 'cat pipeline.log'
                 
                 // Archive the retrieved binary so it appears in Jenkins artifacts
