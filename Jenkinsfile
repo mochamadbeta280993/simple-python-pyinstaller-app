@@ -73,40 +73,40 @@ node {
                     // Push code to Heroku repository for deployment
                     sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main'
 
-                    script {
-                        // Retrieve all available logs
-                        def logLines = currentBuild.rawBuild.getLog(Integer.MAX_VALUE)
+                    // script {
+                    //     // Retrieve all available logs
+                    //     def logLines = currentBuild.rawBuild.getLog(Integer.MAX_VALUE)
 
-                        // Variables to track log extraction
-                        def startIndex = -1
-                        def endIndex = -1
+                    //     // Variables to track log extraction
+                    //     def startIndex = -1
+                    //     def endIndex = -1
 
-                        // Find indices of BASE64_START and BASE64_END
-                        logLines.eachWithIndex { line, index ->
-                            if (line.contains("BASE64_START")) {
-                                startIndex = index
-                            }
-                            if (line.contains("BASE64_END") && startIndex != -1) {
-                                endIndex = index
-                                return  // Stop searching once we find BASE64_END
-                            }
-                        }
+                    //     // Find indices of BASE64_START and BASE64_END
+                    //     logLines.eachWithIndex { line, index ->
+                    //         if (line.contains("BASE64_START")) {
+                    //             startIndex = index
+                    //         }
+                    //         if (line.contains("BASE64_END") && startIndex != -1) {
+                    //             endIndex = index
+                    //             return  // Stop searching once we find BASE64_END
+                    //         }
+                    //     }
 
-                        // Extract logs between BASE64_START and BASE64_END
-                        def extractedLogs = []
-                        if (startIndex != -1 && endIndex != -1) {
-                            extractedLogs = logLines[startIndex..endIndex]
-                        } else {
-                            echo "BASE64_START or BASE64_END not found in logs!"
-                        }
+                    //     // Extract logs between BASE64_START and BASE64_END
+                    //     def extractedLogs = []
+                    //     if (startIndex != -1 && endIndex != -1) {
+                    //         extractedLogs = logLines[startIndex..endIndex]
+                    //     } else {
+                    //         echo "BASE64_START or BASE64_END not found in logs!"
+                    //     }
 
-                        // Save logs to a file
-                        def logFile = "extracted_logs.txt"
-                        writeFile file: logFile, text: extractedLogs.join("\n")
+                    //     // Save logs to a file
+                    //     def logFile = "extracted_logs.txt"
+                    //     writeFile file: logFile, text: extractedLogs.join("\n")
 
-                        // Archive the log file as an artifact
-                        archiveArtifacts artifacts: logFile
-                    }
+                    //     // Archive the log file as an artifact
+                    //     archiveArtifacts artifacts: logFile
+                    // }
                 }
             }
             // Mark deployment as successful
@@ -117,6 +117,41 @@ node {
         } finally {
             // If deployment was successful, archive the build artifacts
             if (deploySuccessful) {
+                script {
+                    // Retrieve all available logs
+                    def logLines = currentBuild.rawBuild.getLog(Integer.MAX_VALUE)
+
+                    // Variables to track log extraction
+                    def startIndex = -1
+                    def endIndex = -1
+
+                    // Find indices of BASE64_START and BASE64_END
+                    logLines.eachWithIndex { line, index ->
+                        if (line.contains("BASE64_START")) {
+                            startIndex = index
+                        }
+                        if (line.contains("BASE64_END") && startIndex != -1) {
+                            endIndex = index
+                            return  // Stop searching once we find BASE64_END
+                        }
+                    }
+
+                    // Extract logs between BASE64_START and BASE64_END
+                    def extractedLogs = []
+                    if (startIndex != -1 && endIndex != -1) {
+                        extractedLogs = logLines[startIndex..endIndex]
+                    } else {
+                        echo "BASE64_START or BASE64_END not found in logs!"
+                    }
+
+                    // Save logs to a file
+                    def logFile = "extracted_logs.txt"
+                    writeFile file: logFile, text: extractedLogs.join("\n")
+
+                    // Archive the log file as an artifact
+                    archiveArtifacts artifacts: logFile
+                }
+
                 // Archive the retrieved binary so it appears in Jenkins artifacts
                 // archiveArtifacts 'artifacts/add2vals'
             }
