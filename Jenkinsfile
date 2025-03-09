@@ -78,25 +78,42 @@ node {
 
                     def appName = 'submission-cicd-pipeline-mba'
 
-                    // Get the latest release's version
-                    def releasesJson = sh(
-                        script: "heroku releases --app ${appName} --json",
-                        returnStdout: true
-                    ).trim()
-                    def releases = new groovy.json.JsonSlurper().parseText(releasesJson)
-                    if (releases.isEmpty()) {
-                        error "No releases found for app ${appName}"
+                    try {
+                        // Fetch releases and log raw JSON for debugging
+                        def releasesJson = sh(
+                            script: "heroku releases --app ${appName} --json",
+                            returnStdout: true
+                        ).trim()
+                        echo "Raw releases JSON:\n${releasesJson}"
+
+                        // Parse JSON
+                        def releases = new groovy.json.JsonSlurper().parseText(releasesJson)
+
+                        // Validate releases structure
+                        if (releases instanceof List && !releases.isEmpty()) {
+                            def latestRelease = releases[0]
+
+                            // Ensure 'version' exists
+                            if (latestRelease.version) {
+                                def latestReleaseVersion = latestRelease.version
+
+                                // Fetch all logs for the latest release
+                                def releaseLogs = sh(
+                                    script: "heroku logs --app ${appName} --release ${latestReleaseVersion}",
+                                    returnStdout: true
+                                ).trim()
+
+                                echo "Latest release (${latestReleaseVersion}) logs:\n${releaseLogs}"
+                            } else {
+                                error "Latest release has no 'version' field!"
+                            }
+                        } else {
+                            error "No releases found or invalid JSON structure!"
+                        }
+                    } catch (Exception e) {
+                        echo "Error: ${e.message}"
+                        echo "Stacktrace: ${e.stackTrace}"
                     }
-                    def latestReleaseVersion = releases[0].version
-
-                    // Fetch **all** logs for the latest release (remove --tail to avoid streaming)
-                    def releaseLogs = sh(
-                        script: "heroku logs --app ${appName} --release ${latestReleaseVersion}",
-                        returnStdout: true
-                    ).trim()
-
-                    // Output all logs (will display fully in Jenkins console)
-                    echo "Latest release (${latestReleaseVersion}) logs:\n${releaseLogs}"
 
                     // //
                     // sh 'apt-get update'
