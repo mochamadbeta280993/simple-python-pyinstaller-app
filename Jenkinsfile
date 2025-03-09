@@ -74,11 +74,14 @@ node {
                     sh 'git push https://heroku:$HEROKU_API_KEY@git.heroku.com/submission-cicd-pipeline-mba.git main'
 
                     script {
-                        // Retrieve the last 500 lines of the console log
-                        def logLines = currentBuild.rawBuild.getLog(500)
-                        logLines.each { line ->
-                            echo "Log: ${line}"
-                        }
+                        // Retrieve all available log lines
+                        def logLines = currentBuild.rawBuild.getLog(Integer.MAX_VALUE)
+
+                        // Get the last 500 lines only (if there are at least 500 lines)
+                        def lastLogLines = logLines.size() > 1000 ? logLines[-1000..-1] : logLines
+
+                        // Print logs all at once (like 'cat pipeline.log')
+                        echo lastLogLines.join("\n")
                     }
                 }
             }
