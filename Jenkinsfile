@@ -119,6 +119,10 @@ node {
                     // Decode Base64 to create an executable
                     def executableFile = "${env.WORKSPACE}/add2vals"
                     sh 'base64 -d ${encodedFile} > ${executableFile}'
+
+                    //
+                    sh 'sudo chown -R jenkins:jenkins /var/jenkins_home/workspace'
+                    sh 'sudo chmod -R 777 /var/jenkins_home/workspace'
                     sh 'chmod +x ${executableFile}'  // Make it executable
 
                     // Archive the executable
